@@ -91,72 +91,76 @@ function App() {
         />
       </div>
 
-      {!isTracking ? (
-        <div className="setup-container">
-          <div className="setup-card">
-            <img src={LogoSasa} alt="Logo" className="setup-logo" />
-            <h2>LiveRide Setup</h2>
-            <p>Masukkan link Strava Beacon Anda untuk memulai tracking.</p>
-            
-            <form onSubmit={handleStart} className="setup-form">
-              <div className="form-group">
-                <label>Strava Beacon Link / ID</label>
-                <input 
-                  type="text" 
-                  required
-                  placeholder="https://www.strava.com/beacon/..." 
-                  value={inputUrl}
-                  onChange={(e) => setInputUrl(e.target.value)}
-                />
+      <div className="app-container">
+        <header className="app-header">
+          <button className="burger-btn" onClick={() => setIsMenuOpen(true)}>
+            <Menu color="white" />
+          </button>
+          <img src={LogoSasa} alt="Logo Sasa" className="header-logo" />
+          <div style={{ width: 24 }}></div>
+        </header>
+        
+        {isMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={() => setIsMenuOpen(false)}>
+            <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
+              <div className="menu-header">
+                <img src={LogoSasa} alt="Logo" className="menu-logo" />
+                <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
+                  <X color="white" />
+                </button>
               </div>
-              <div className="form-group">
-                <label>Total Likes Awal (Opsional)</label>
-                <input 
-                  type="number" 
-                  min="0"
-                  placeholder="Contoh: 150" 
-                  value={inputLikes}
-                  onChange={(e) => setInputLikes(e.target.value)}
-                />
-              </div>
-              <button type="submit" className="start-btn">Start Live Tracking</button>
-            </form>
-          </div>
-        </div>
-      ) : (
-        <div className="app-container">
-          <header className="app-header">
-            <button className="burger-btn" onClick={() => setIsMenuOpen(true)}>
-              <Menu color="white" />
-            </button>
-            <img src={LogoSasa} alt="Logo Sasa" className="header-logo" />
-            <div style={{ width: 24 }}></div>
-          </header>
-          
-          {isMenuOpen && (
-            <div className="mobile-menu-overlay" onClick={() => setIsMenuOpen(false)}>
-              <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
-                <div className="menu-header">
-                  <img src={LogoSasa} alt="Logo" className="menu-logo" />
-                  <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
-                    <X color="white" />
-                  </button>
-                </div>
-                <nav className="menu-nav">
-                  <a href="/" className="menu-link"><Home size={20} /> Home</a>
+              <nav className="menu-nav">
+                <a href="/" className="menu-link"><Home size={20} /> Home</a>
+                {beaconId && (
                   <a href={`https://www.strava.com/beacon/${beaconId}`} target="_blank" className="menu-link" rel="noreferrer"><Activity size={20} /> Open in Strava</a>
-                  <button className="menu-link menu-btn" onClick={() => { setIsMenuOpen(false); setIsTracking(false); }}><MapIconMenu size={20} /> Setup Baru</button>
-                </nav>
+                )}
+                <button className="menu-link menu-btn" onClick={() => { setIsMenuOpen(false); setIsTracking(false); }}><MapIconMenu size={20} /> Setup Baru</button>
+              </nav>
+            </div>
+          </div>
+        )}
+
+        <main className="main-content">
+          {!isTracking ? (
+            <div className="setup-container">
+              <div className="setup-card">
+                <img src={LogoSasa} alt="Logo" className="setup-logo" />
+                <h2>LiveRide Setup</h2>
+                <p>Masukkan link Strava Beacon Anda untuk memulai tracking.</p>
+                
+                <form onSubmit={handleStart} className="setup-form">
+                  <div className="form-group">
+                    <label>Strava Beacon Link / ID</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="https://www.strava.com/beacon/..." 
+                      value={inputUrl}
+                      onChange={(e) => setInputUrl(e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Total Likes Awal (Opsional)</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      placeholder="Contoh: 150" 
+                      value={inputLikes}
+                      onChange={(e) => setInputLikes(e.target.value)}
+                    />
+                  </div>
+                  <button type="submit" className="start-btn">Start Live Tracking</button>
+                </form>
               </div>
             </div>
+          ) : (
+            <>
+              <Map coordinates={coordinates} />
+              <Dashboard stats={stats} likes={likes} setLikes={setLikes} />
+            </>
           )}
-
-          <main className="main-content">
-            <Map coordinates={coordinates} />
-            <Dashboard stats={stats} likes={likes} setLikes={setLikes} />
-          </main>
-        </div>
-      )}
+        </main>
+      </div>
     </>
   )
 }

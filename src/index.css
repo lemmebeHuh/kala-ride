@@ -442,8 +442,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  flex: 1;
+  width: 100%;
   padding: 24px;
+  overflow-y: auto;
 }
 
 .setup-card {
@@ -585,7 +587,7 @@ body {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 100;
+  z-index: 9999;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
