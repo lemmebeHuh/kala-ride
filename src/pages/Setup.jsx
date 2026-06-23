@@ -1,0 +1,103 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+
+export default function Setup() {
+  const [inputUrl, setInputUrl] = useState('');
+  const [inputLikes, setInputLikes] = useState('');
+  const [inputTitle, setInputTitle] = useState('');
+  const [inputSport, setInputSport] = useState('ride');
+  const [inputDistancePerLike, setInputDistancePerLike] = useState('');
+  const navigate = useNavigate();
+
+  const handleStart = (e) => {
+    e.preventDefault();
+    let finalId = inputUrl.trim();
+    if (finalId.includes('strava.com/beacon/')) {
+      finalId = finalId.split('strava.com/beacon/')[1].split('?')[0].split('/')[0];
+    }
+    
+    if (finalId) {
+      const titleEncoded = encodeURIComponent(inputTitle || "Kala's Live Ride");
+      const likesVal = parseInt(inputLikes) || 0;
+      const perlikeVal = parseInt(inputDistancePerLike) || 500;
+      navigate(`/live?beacon=${finalId}&likes=${likesVal}&title=${titleEncoded}&sport=${inputSport}&perlike=${perlikeVal}`);
+    }
+  };
+
+  return (
+    <div className="app-container">
+      <Header />
+      <main className="main-content">
+        <div className="setup-container">
+          <div className="setup-card">
+            <h2>LiveRide Setup</h2>
+            <p>Masukkan link Strava Beacon Anda untuk memulai tracking.</p>
+            
+            <form onSubmit={handleStart} className="setup-form">
+              <div className="form-group">
+                <label>Strava Beacon Link / ID</label>
+                <input 
+                  type="text" 
+                  className="form-control"
+                  required
+                  placeholder="https://www.strava.com/beacon/..." 
+                  value={inputUrl}
+                  onChange={(e) => setInputUrl(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label>Judul Aktivitas</label>
+                <input 
+                  type="text" 
+                  className="form-control"
+                  placeholder="Kala's Live Ride" 
+                  value={inputTitle}
+                  onChange={(e) => setInputTitle(e.target.value)}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Jenis Olahraga</label>
+                  <select 
+                    value={inputSport}
+                    onChange={(e) => setInputSport(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="ride">Sepeda</option>
+                    <option value="run">Lari</option>
+                    <option value="trail">Trail/Hike</option>
+                    <option value="walk">Jalan</option>
+                  </select>
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Meters / Like</label>
+                  <input 
+                    type="number" 
+                    min="1"
+                    className="form-control"
+                    placeholder="500" 
+                    value={inputDistancePerLike}
+                    onChange={(e) => setInputDistancePerLike(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Total Likes Awal</label>
+                <input 
+                  type="number" 
+                  className="form-control"
+                  min="0"
+                  placeholder="Contoh: 150" 
+                  value={inputLikes}
+                  onChange={(e) => setInputLikes(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="start-btn">Start Live Tracking</button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

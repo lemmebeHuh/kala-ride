@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle, Bike, Mountain, Footprints } from 'lucide-react';
+import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle, Bike, Mountain, Footprints, Share2 } from 'lucide-react';
 import ProfileImg from '../assets/ajipro50.png';
 
 export default function Dashboard({ stats, likes, title, sportType, distancePerLike }) {
@@ -38,31 +38,68 @@ export default function Dashboard({ stats, likes, title, sportType, distancePerL
 
   const isCompleted = progressPercentage === 100 && targetDistanceMeters > 0;
 
+  const handleShare = () => {
+    const url = window.location.href;
+    const shareData = {
+      title: `${title} - LiveRide Tracker`,
+      text: `Pantau progress live saya di LiveRide! Target: ${likes} Likes = ${(likes * distancePerLike / 1000).toFixed(1)} km.`,
+      url: url
+    };
+    
+    if (navigator.share) {
+      navigator.share(shareData).catch((err) => console.log('Error sharing:', err));
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link disalin ke clipboard!');
+    }
+  };
+
   return (
     <div className="sidebar">
       <div className="profile-card">
-        <div className="profile-header">
-          <img src={ProfileImg} alt="Kala" className="avatar" style={{ objectFit: 'cover' }} />
-          <div className="profile-info">
-            <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {sportType === 'run' ? <Footprints size={24} color="var(--text-primary)" /> : 
-               sportType === 'trail' ? <Mountain size={24} color="var(--text-primary)" /> : 
-               sportType === 'walk' ? <Footprints size={24} color="var(--text-primary)" /> : 
-               <Bike size={24} color="var(--text-primary)" />}
-              {title || "Kala's Live Ride"}
-            </h1>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
-              <div className="live-badge" style={stats.status !== 1 ? { background: "rgba(16, 185, 129, 0.1)", color: "var(--success)" } : {}}>
-                {stats.status === 1 && <div className="live-dot"></div>}
-                {stats.status === 1 ? "LIVE TRACKING" : "STOPPED / FINISHED"}
+        <div className="profile-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <img src={ProfileImg} alt="Kala" className="avatar" style={{ objectFit: 'cover' }} />
+            <div className="profile-info">
+              <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {sportType === 'run' ? <Footprints size={24} color="var(--text-primary)" /> : 
+                 sportType === 'trail' ? <Mountain size={24} color="var(--text-primary)" /> : 
+                 sportType === 'walk' ? <Footprints size={24} color="var(--text-primary)" /> : 
+                 <Bike size={24} color="var(--text-primary)" />}
+                {title || "Kala's Live Ride"}
+              </h1>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                <div className="live-badge" style={stats.status !== 1 ? { background: "rgba(16, 185, 129, 0.1)", color: "var(--success)" } : {}}>
+                  {stats.status === 1 && <div className="live-dot"></div>}
+                  {stats.status === 1 ? "LIVE TRACKING" : "STOPPED / FINISHED"}
+                </div>
+                {stats.status !== 1 && stats.activity_id && (
+                  <a href={`https://www.strava.com/activities/${stats.activity_id}`} target="_blank" rel="noreferrer" style={{ fontSize: '11px', color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: '600' }}>
+                    Lihat Detail Aktivitas ↗
+                  </a>
+                )}
               </div>
-              {stats.status !== 1 && stats.activity_id && (
-                <a href={`https://www.strava.com/activities/${stats.activity_id}`} target="_blank" rel="noreferrer" style={{ fontSize: '11px', color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: '600' }}>
-                  Lihat Detail Aktivitas ↗
-                </a>
-              )}
             </div>
           </div>
+          
+          <button 
+            onClick={handleShare} 
+            title="Share Live Link"
+            style={{ 
+              background: 'var(--bg-primary)', 
+              border: '1px solid var(--bg-tertiary)', 
+              padding: '10px', 
+              borderRadius: '50%', 
+              color: 'white', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+            }}
+          >
+            <Share2 size={20} />
+          </button>
         </div>
       </div>
 
