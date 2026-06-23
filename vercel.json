@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/beacon/:match*",
+      "source": "/api/beacon/:match*",
       "destination": "https://www.strava.com/beacon/:match*"
     },
     {
