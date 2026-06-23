@@ -5,6 +5,7 @@ import Dashboard from '../components/Dashboard';
 import { fetchStravaBeacon } from '../services/strava';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../services/firebase';
 

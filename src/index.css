@@ -137,6 +137,9 @@ body {
   .map-container {
     height: auto;
     flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
   }
 }
 
@@ -393,10 +396,14 @@ body {
 /* Map Container */
 .map-container {
   flex: 1; /* Maps take space automatically in flex */
-  min-height: 45vh; /* Mobile map height */
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
   background: var(--bg-secondary);
   position: relative;
   border-bottom: 1px solid var(--bg-tertiary);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
