@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/beacon/:match*",
+      "destination": "https://www.strava.com/beacon/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
