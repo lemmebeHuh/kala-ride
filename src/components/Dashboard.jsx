@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Battery, Clock, Map as MapIcon, Heart } from 'lucide-react';
+import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle } from 'lucide-react';
 import ProfileImg from '../assets/ajipro50.png';
 
 export default function Dashboard({ stats, likes, setLikes }) {
@@ -77,8 +77,12 @@ export default function Dashboard({ stats, likes, setLikes }) {
         </div>
 
         {isCompleted && (
-          <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderRadius: '8px', fontWeight: 'bold', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-            🎉 Challenge Completed! 🎉
+          <div className="completion-banner">
+            <CheckCircle size={20} color="var(--success)" />
+            <div className="completion-text">
+              <div className="completion-title">CHALLENGE COMPLETE</div>
+              <div className="completion-desc">Target distance achieved.</div>
+            </div>
           </div>
         )}
         

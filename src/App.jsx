@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Menu, X, Home, Activity, Map as MapIconMenu } from 'lucide-react'
 import Map from './components/Map'
 import Dashboard from './components/Dashboard'
 import { fetchStravaBeacon } from './services/strava'
@@ -13,6 +14,7 @@ function App() {
   const [beaconId, setBeaconId] = useState(urlBeacon || '');
   const [likes, setLikes] = useState(urlLikes);
   const [isTracking, setIsTracking] = useState(!!urlBeacon);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const [inputUrl, setInputUrl] = useState('');
   const [inputLikes, setInputLikes] = useState(urlLikes || '');
@@ -123,8 +125,31 @@ function App() {
       ) : (
         <div className="app-container">
           <header className="app-header">
+            <button className="burger-btn" onClick={() => setIsMenuOpen(true)}>
+              <Menu color="white" />
+            </button>
             <img src={LogoSasa} alt="Logo Sasa" className="header-logo" />
+            <div style={{ width: 24 }}></div>
           </header>
+          
+          {isMenuOpen && (
+            <div className="mobile-menu-overlay" onClick={() => setIsMenuOpen(false)}>
+              <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
+                <div className="menu-header">
+                  <img src={LogoSasa} alt="Logo" className="menu-logo" />
+                  <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
+                    <X color="white" />
+                  </button>
+                </div>
+                <nav className="menu-nav">
+                  <a href="/" className="menu-link"><Home size={20} /> Home</a>
+                  <a href={`https://www.strava.com/beacon/${beaconId}`} target="_blank" className="menu-link" rel="noreferrer"><Activity size={20} /> Open in Strava</a>
+                  <button className="menu-link menu-btn" onClick={() => { setIsMenuOpen(false); setIsTracking(false); }}><MapIconMenu size={20} /> Setup Baru</button>
+                </nav>
+              </div>
+            </div>
+          )}
+
           <main className="main-content">
             <Map coordinates={coordinates} />
             <Dashboard stats={stats} likes={likes} setLikes={setLikes} />
