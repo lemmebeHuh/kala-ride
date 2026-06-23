@@ -53,7 +53,8 @@ function App() {
           moving_time: data.stats?.moving_time,
           elapsed_time: data.stats?.elapsed_time,
           battery_level: data.battery_level,
-          status: data.status
+          status: data.status,
+          activity_id: data.activity_id
         });
       }
     };

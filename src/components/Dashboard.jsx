@@ -45,9 +45,16 @@ export default function Dashboard({ stats, likes, setLikes }) {
           <img src={ProfileImg} alt="Kala" className="avatar" style={{ objectFit: 'cover' }} />
           <div className="profile-info">
             <h1>Kala's Live Ride</h1>
-            <div className="live-badge" style={stats.status !== 1 ? { background: "rgba(16, 185, 129, 0.1)", color: "var(--success)" } : {}}>
-              {stats.status === 1 && <div className="live-dot"></div>}
-              {stats.status === 1 ? "LIVE TRACKING" : "STOPPED / FINISHED"}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+              <div className="live-badge" style={stats.status !== 1 ? { background: "rgba(16, 185, 129, 0.1)", color: "var(--success)" } : {}}>
+                {stats.status === 1 && <div className="live-dot"></div>}
+                {stats.status === 1 ? "LIVE TRACKING" : "STOPPED / FINISHED"}
+              </div>
+              {stats.status !== 1 && stats.activity_id && (
+                <a href={`https://www.strava.com/activities/${stats.activity_id}`} target="_blank" rel="noreferrer" style={{ fontSize: '11px', color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: '600' }}>
+                  Lihat Detail Aktivitas ↗
+                </a>
+              )}
             </div>
           </div>
         </div>
