@@ -1,8 +1,8 @@
 import React from 'react';
-import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle, Bike, Mountain, Footprints, Share2 } from 'lucide-react';
+import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle, Bike, Mountain, Footprints, Coffee, Share2 } from 'lucide-react';
 import ProfileImg from '../assets/ajipro50.png';
 
-export default function Dashboard({ stats, likes, title, sportType, distancePerLike }) {
+export default function Dashboard({ stats, likes, title, sportType, distancePerLike, donationUrl }) {
   // Convert meters to km
   const distanceKm = stats.distance ? (stats.distance / 1000).toFixed(2) : "0.00";
   
@@ -142,6 +142,35 @@ export default function Dashboard({ stats, likes, title, sportType, distancePerL
           <span style={{ color: 'var(--text-secondary)' }}>Likes Terkumpul</span>
         </div>
       </div>
+
+      {donationUrl && (
+        <a 
+          href={donationUrl} 
+          target="_blank" 
+          rel="noreferrer" 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '8px', 
+            background: 'var(--accent-primary)', 
+            color: 'white', 
+            textDecoration: 'none', 
+            padding: '12px 20px', 
+            borderRadius: '12px', 
+            fontWeight: '600', 
+            margin: '0 0 16px 0',
+            boxShadow: '0 4px 15px rgba(252, 82, 0, 0.4)',
+            transition: 'transform 0.2s ease',
+            cursor: 'pointer'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          <Coffee size={20} />
+          Support Rider
+        </a>
+      )}
 
       <div className="stats-grid">
         <div className="stat-card">

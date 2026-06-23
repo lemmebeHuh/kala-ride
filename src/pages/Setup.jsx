@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import { db } from '../services/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function Setup() {
   const [inputUrl, setInputUrl] = useState('');
@@ -8,20 +10,43 @@ export default function Setup() {
   const [inputTitle, setInputTitle] = useState('');
   const [inputSport, setInputSport] = useState('ride');
   const [inputDistancePerLike, setInputDistancePerLike] = useState('');
+  const [inputDonation, setInputDonation] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleStart = (e) => {
+  const handleStart = async (e) => {
     e.preventDefault();
-    let finalId = inputUrl.trim();
-    if (finalId.includes('strava.com/beacon/')) {
-      finalId = finalId.split('strava.com/beacon/')[1].split('?')[0].split('/')[0];
-    }
-    
-    if (finalId) {
-      const titleEncoded = encodeURIComponent(inputTitle || "Kala's Live Ride");
-      const likesVal = parseInt(inputLikes) || 0;
-      const perlikeVal = parseInt(inputDistancePerLike) || 500;
-      navigate(`/live?beacon=${finalId}&likes=${likesVal}&title=${titleEncoded}&sport=${inputSport}&perlike=${perlikeVal}`);
+    setIsLoading(true);
+
+    try {
+      let finalId = inputUrl.trim();
+      if (finalId.includes('strava.com/beacon/')) {
+        finalId = finalId.split('strava.com/beacon/')[1].split('?')[0].split('/')[0];
+      }
+      
+      if (!finalId) {
+        alert("Link Beacon tidak valid");
+        setIsLoading(false);
+        return;
+      }
+
+      const sessionData = {
+        beaconId: finalId,
+        title: inputTitle || "Kala's Live Ride",
+        likes: parseInt(inputLikes) || 0,
+        perlike: parseInt(inputDistancePerLike) || 500,
+        sport: inputSport,
+        donationUrl: inputDonation.trim(),
+        createdAt: serverTimestamp()
+      };
+
+      const docRef = await addDoc(collection(db, "sessions"), sessionData);
+      navigate(`/live?id=${docRef.id}`);
+    } catch (error) {
+      console.error("Error creating session: ", error);
+      alert("Gagal membuat sesi live. Pastikan koneksi internet stabil.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +108,7 @@ export default function Setup() {
                 </div>
               </div>
               <div className="form-group">
-                <label>Total Likes Awal</label>
+                <label>Total Likes (Medsos)</label>
                 <input 
                   type="number" 
                   className="form-control"
@@ -93,7 +118,19 @@ export default function Setup() {
                   onChange={(e) => setInputLikes(e.target.value)}
                 />
               </div>
-              <button type="submit" className="start-btn">Start Live Tracking</button>
+              <div className="form-group">
+                <label>Link Donasi / Support (Opsional)</label>
+                <input 
+                  type="url" 
+                  className="form-control"
+                  placeholder="https://saweria.co/..." 
+                  value={inputDonation}
+                  onChange={(e) => setInputDonation(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="start-btn" disabled={isLoading}>
+                {isLoading ? "Menyiapkan..." : "Start Live Tracking"}
+              </button>
             </form>
           </div>
         </div>
