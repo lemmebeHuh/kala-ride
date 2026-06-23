@@ -10,14 +10,23 @@ function App() {
   const searchParams = new URLSearchParams(window.location.search);
   const urlBeacon = searchParams.get('beacon');
   const urlLikes = parseInt(searchParams.get('likes')) || 0;
+  const urlTitle = searchParams.get('title') || "Kala's Live Ride";
+  const urlSport = searchParams.get('sport') || 'ride';
+  const urlDistancePerLike = parseInt(searchParams.get('perlike')) || 500;
 
   const [beaconId, setBeaconId] = useState(urlBeacon || '');
   const [likes, setLikes] = useState(urlLikes);
+  const [title, setTitle] = useState(urlTitle);
+  const [sportType, setSportType] = useState(urlSport);
+  const [distancePerLike, setDistancePerLike] = useState(urlDistancePerLike);
   const [isTracking, setIsTracking] = useState(!!urlBeacon);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const [inputUrl, setInputUrl] = useState('');
   const [inputLikes, setInputLikes] = useState(urlLikes || '');
+  const [inputTitle, setInputTitle] = useState(urlTitle);
+  const [inputSport, setInputSport] = useState(urlSport);
+  const [inputDistancePerLike, setInputDistancePerLike] = useState(urlDistancePerLike);
 
   const [coordinates, setCoordinates] = useState([]);
   const [stats, setStats] = useState({});
@@ -33,9 +42,13 @@ function App() {
     if (finalId) {
       setBeaconId(finalId);
       setLikes(parseInt(inputLikes) || 0);
+      setTitle(inputTitle || "Kala's Live Ride");
+      setSportType(inputSport);
+      setDistancePerLike(parseInt(inputDistancePerLike) || 500);
       setIsTracking(true);
       // Update URL without reloading
-      window.history.pushState({}, '', `?beacon=${finalId}&likes=${parseInt(inputLikes) || 0}`);
+      const titleEncoded = encodeURIComponent(inputTitle || "Kala's Live Ride");
+      window.history.pushState({}, '', `?beacon=${finalId}&likes=${parseInt(inputLikes) || 0}&title=${titleEncoded}&sport=${inputSport}&perlike=${parseInt(inputDistancePerLike) || 500}`);
     }
   };
 
@@ -124,7 +137,6 @@ function App() {
           {!isTracking ? (
             <div className="setup-container">
               <div className="setup-card">
-                <img src={LogoSasa} alt="Logo" className="setup-logo" />
                 <h2>LiveRide Setup</h2>
                 <p>Masukkan link Strava Beacon Anda untuk memulai tracking.</p>
                 
@@ -133,6 +145,7 @@ function App() {
                     <label>Strava Beacon Link / ID</label>
                     <input 
                       type="text" 
+                      className="form-control"
                       required
                       placeholder="https://www.strava.com/beacon/..." 
                       value={inputUrl}
@@ -140,23 +153,66 @@ function App() {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Total Likes Awal (Opsional)</label>
-                    <input 
-                      type="number" 
-                      min="0"
-                      placeholder="Contoh: 150" 
-                      value={inputLikes}
-                      onChange={(e) => setInputLikes(e.target.value)}
-                    />
-                  </div>
-                  <button type="submit" className="start-btn">Start Live Tracking</button>
+                <label>Judul Aktivitas</label>
+                <input 
+                  type="text" 
+                  className="form-control"
+                  placeholder="Kala's Live Ride" 
+                  value={inputTitle}
+                  onChange={(e) => setInputTitle(e.target.value)}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Jenis Olahraga</label>
+                  <select 
+                    value={inputSport}
+                    onChange={(e) => setInputSport(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="ride">Sepeda</option>
+                    <option value="run">Lari</option>
+                    <option value="trail">Trail/Hike</option>
+                    <option value="walk">Jalan</option>
+                  </select>
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Meters / Like</label>
+                  <input 
+                    type="number" 
+                    min="1"
+                    className="form-control"
+                    placeholder="500" 
+                    value={inputDistancePerLike}
+                    onChange={(e) => setInputDistancePerLike(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Total Likes Awal</label>
+                <input 
+                  type="number" 
+                  className="form-control"
+                  min="0"
+                  placeholder="Contoh: 150" 
+                  value={inputLikes}
+                  onChange={(e) => setInputLikes(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="start-btn">Start Live Tracking</button>
                 </form>
               </div>
             </div>
           ) : (
             <>
               <Map coordinates={coordinates} />
-              <Dashboard stats={stats} likes={likes} setLikes={setLikes} />
+              <Dashboard 
+                stats={stats} 
+                likes={likes} 
+                title={title}
+                sportType={sportType}
+                distancePerLike={distancePerLike}
+              />
             </>
           )}
         </main>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle } from 'lucide-react';
+import { Activity, Battery, Clock, Map as MapIcon, Heart, CheckCircle, Bike, Mountain, Footprints } from 'lucide-react';
 import ProfileImg from '../assets/ajipro50.png';
 
-export default function Dashboard({ stats, likes, setLikes }) {
+export default function Dashboard({ stats, likes, title, sportType, distancePerLike }) {
   // Convert meters to km
   const distanceKm = stats.distance ? (stats.distance / 1000).toFixed(2) : "0.00";
   
@@ -18,8 +18,8 @@ export default function Dashboard({ stats, likes, setLikes }) {
 
   const movingTime = formatTime(stats.moving_time);
   
-  // Challenge Math: 1 Like = 500 meters (0.5 km)
-  const targetDistanceMeters = (likes || 0) * 500;
+  // Challenge Math: Dynamic per like
+  const targetDistanceMeters = (likes || 0) * (distancePerLike || 500);
   const targetDistanceKm = (targetDistanceMeters / 1000).toFixed(2);
   
   const currentDistance = stats.distance || 0;
@@ -44,7 +44,13 @@ export default function Dashboard({ stats, likes, setLikes }) {
         <div className="profile-header">
           <img src={ProfileImg} alt="Kala" className="avatar" style={{ objectFit: 'cover' }} />
           <div className="profile-info">
-            <h1>Kala's Live Ride</h1>
+            <h1 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {sportType === 'run' ? <Footprints size={24} color="var(--text-primary)" /> : 
+               sportType === 'trail' ? <Mountain size={24} color="var(--text-primary)" /> : 
+               sportType === 'walk' ? <Footprints size={24} color="var(--text-primary)" /> : 
+               <Bike size={24} color="var(--text-primary)" />}
+              {title || "Kala's Live Ride"}
+            </h1>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
               <div className="live-badge" style={stats.status !== 1 ? { background: "rgba(16, 185, 129, 0.1)", color: "var(--success)" } : {}}>
                 {stats.status === 1 && <div className="live-dot"></div>}
@@ -65,7 +71,7 @@ export default function Dashboard({ stats, likes, setLikes }) {
           <div>
             <div className="challenge-title">Challenge Progress</div>
             <div style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-              1 Like = 500 meters
+              1 Like = {distancePerLike || 500} meters
             </div>
           </div>
           <div className="challenge-target" style={isCompleted ? { color: "var(--success)" } : {}}>
@@ -93,16 +99,10 @@ export default function Dashboard({ stats, likes, setLikes }) {
           </div>
         )}
         
-        <div className="likes-input">
+        <div className="likes-input" style={{ background: 'transparent', border: 'none', padding: 0 }}>
           <Heart size={20} color="var(--danger)" fill="var(--danger)" />
-          <input 
-            type="number" 
-            min="0" 
-            value={likes} 
-            onChange={(e) => setLikes(parseInt(e.target.value) || 0)}
-            placeholder="Enter total likes..."
-          />
-          <span>Likes</span>
+          <span style={{ fontSize: '24px', fontWeight: '800', color: 'white' }}>{likes}</span>
+          <span style={{ color: 'var(--text-secondary)' }}>Likes Terkumpul</span>
         </div>
       </div>
 
