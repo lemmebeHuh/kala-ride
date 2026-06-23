@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
+import BlurText from '../components/BlurText';
 
 const copyOptions = [
   {
@@ -42,23 +43,14 @@ export default function Landing() {
     const x = e.clientX;
     const y = e.clientY;
     setMousePos({ x, y });
-
-    // Desktop only tracking for active index
-    if (width > 768) {
-      if (x < width / 3) setActiveIndex(0);
-      else if (x < (2 * width) / 3) setActiveIndex(1);
-      else setActiveIndex(2);
-    }
   };
 
-  // For mobile, cycle options automatically every 3 seconds
+  // Auto-cycle options every 3 seconds for all devices
   React.useEffect(() => {
-    if (window.innerWidth <= 768) {
-      const interval = setInterval(() => {
-        setActiveIndex(prev => (prev + 1) % copyOptions.length);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % copyOptions.length);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -70,31 +62,51 @@ export default function Landing() {
         <div className="hero-corner bottom-right">Interactive Beacon Tracker</div>
 
         <div className="hero-center">
-          <h1 className="hero-title">
-            <span style={{ 
-              fontFamily: "'Playfair Display', serif", 
-              fontStyle: "italic", 
-              fontWeight: 400,
-              color: copyOptions[activeIndex].color,
-              transition: 'color 0.5s ease',
-              display: 'block'
-            }}>
-              {copyOptions[activeIndex].title1}
-            </span>
-            <span style={{ 
-              fontFamily: "'Inter', sans-serif", 
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '-2px',
-              display: 'block'
-            }}>
-              {copyOptions[activeIndex].title2}
-            </span>
-          </h1>
-          <p className="hero-subtitle" style={{ transition: 'opacity 0.3s' }}>
-            {copyOptions[activeIndex].subtitle}
-          </p>
-          <button className="hero-cta" onClick={() => navigate('/setup')}>
+          <div className="hero-title">
+            <BlurText
+              key={`b1-${activeIndex}`}
+              text={copyOptions[activeIndex].title1}
+              delay={50}
+              animateBy="letters"
+              direction="top"
+              style={{ 
+                fontFamily: "'Playfair Display', serif", 
+                fontStyle: "italic", 
+                fontWeight: 400,
+                color: 'white',
+                margin: 0,
+                justifyContent: 'center'
+              }}
+            />
+            <BlurText
+              key={`b2-${activeIndex}`}
+              text={copyOptions[activeIndex].title2}
+              delay={100}
+              animateBy="words"
+              direction="bottom"
+              className="interactive-title2"
+              style={{ 
+                fontFamily: "'Inter', sans-serif", 
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '-2px',
+                color: 'white',
+                margin: 0,
+                justifyContent: 'center'
+              }}
+            />
+          </div>
+          <div className="hero-subtitle" style={{ transition: 'opacity 0.3s' }}>
+            <BlurText
+              key={`b3-${activeIndex}`}
+              text={copyOptions[activeIndex].subtitle}
+              delay={30}
+              animateBy="words"
+              direction="bottom"
+              style={{ margin: 0, justifyContent: 'center' }}
+            />
+          </div>
+          <button className="hero-cta" onClick={() => navigate('/setup')} style={{ marginTop: '24px' }}>
             Launch App &#8594;
           </button>
         </div>

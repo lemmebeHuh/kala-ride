@@ -721,8 +721,14 @@ body {
   transition: color 0.3s;
 }
 
-@media (max-width: 768px) {
-  .hero-corner { padding: 24px; font-size: 12px; }
+@media (max-width: 480px) {
+  .hero-corner { 
+    padding: 16px; 
+    font-size: 10px; 
+    letter-spacing: 1px; 
+  }
+  .bottom-left { max-width: 45%; text-align: left; }
+  .bottom-right { max-width: 45%; text-align: right; }
 }
 
 .hero-corner:hover {
@@ -746,8 +752,18 @@ body {
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
   text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.interactive-title2 {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.interactive-title2:hover {
+  transform: skewX(-15deg) scale(1.05);
 }
 
 .hero-subtitle {
